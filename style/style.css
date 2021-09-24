@@ -61,6 +61,7 @@ body {
     padding: 1em 1.5em;
     margin-bottom: 2px;
     line-height: 16px;
+    transition: all 500ms ease;
 }
 
 .add-todo {
@@ -70,6 +71,26 @@ body {
 }
 
 .delete,
+.check,
 .add-todo {
     cursor: pointer;
+}
+
+.check {
+    font-size: 1em;
+    padding-right: 1em;
+}
+
+.completed {
+    text-decoration: line-through;
+    opacity: 0.3;
+}
+
+.filtered {
+    display: none !important;
+}
+
+.remove {
+    transform: translateY(8rem) rotateZ(20deg);
+    opacity: 0; 
 }
