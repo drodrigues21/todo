@@ -27,7 +27,7 @@ body {
 
 /* Form styling */
 .search-form input,
-.add-todo-form input {
+.todo-form input {
     width: 100%;
     padding: .75em;
     border: none;
@@ -37,14 +37,14 @@ body {
     color: rgb(250, 250, 250);
 }
 
-.add-todo-form label {
+.todo-form label {
     display: inline-block;
     width: 100%;
     text-align: center;
     padding: .5em;
 }
 
-.add-todo-form {
+.todo-form {
     position: relative;
 }
 
@@ -54,7 +54,7 @@ body {
     padding-left: 0;
 }
 
-.todo-item {
+.todo {
     display: flex;
     justify-content: space-between;
     background-color: rgb(66, 58, 111);
@@ -63,13 +63,13 @@ body {
     line-height: 16px;
 }
 
-.delete,
-.add {
-    cursor: pointer;
-}
-
-.add-icon {
+.add-todo {
     position: absolute;
     top: 65%;
     right: 5%;
+}
+
+.delete,
+.add-todo {
+    cursor: pointer;
 }

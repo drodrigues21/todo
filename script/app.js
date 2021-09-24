@@ -1,60 +1,118 @@
-const addTodoForm = document.querySelector('.add-todo-form');
-const todoList = document.querySelector('.todo-list');
+// Get the ul element to append the li's
+const todosList = document.querySelector('.todo-list');
+// Get the form input to get the todo from user
+const todoInput = document.querySelector('.todo-form input');
+// Get the form to listen to submit event
+const submitForm = document.querySelector('.todo-form');
 
-// Create li template and add to ul
-const addTodo = (todo) => {
-    const todoTemplate = `
-        <li class="todo-item">
-            <span>${todo}</span>
-            <i class="far fa-trash-alt delete"></i>
-        </li>
-    `;
 
-    const keyValue = todo;
-
-    localStorage.setItem(keyValue, todoTemplate);
-
-    let html = localStorage.getItem(keyValue);
-
-    todoList.innerHTML += html;
+// Create an li with a class and icon (delete icon) and add user input as the li text content
+const createTodo = (todo) => {
     
+    const deleteIcon = document.createElement('i');
+    deleteIcon.classList.add('far', 'fa-trash-alt', 'delete');
+
+    const todoItem = document.createElement('li');
+    todoItem.classList.add('todo');
+    todoItem.textContent = todo;
+    
+    todoItem.appendChild(deleteIcon);
+    todosList.appendChild(todoItem)
+
+    saveLocalTodos(todo);
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+// Save the user input to local storage 
+const saveLocalTodos = (todo) => {
+    
+    let todos;
 
-    for(let i = 0; i < localStorage.length; i++) {
-        let localKey = localStorage.key(i);
+    if(localStorage.getItem('todos') === null) {
+        todos = [];
+    } else {
+        todos = JSON.parse(localStorage.getItem('todos'));
+    }
 
-        todoList.innerHTML += localStorage.getItem(localKey);
+    todos.push(todo);
+    localStorage.setItem('todos', JSON.stringify(todos));
+}
+
+// Get the data from local storage and render on page reload
+const getLocalTodos = () => {
+    let todos;
+
+    if(localStorage.getItem('todos') === null) {
+        todos = [];
+    } else {
+        todos = JSON.parse(localStorage.getItem('todos'));
+    }
+
+    todos.forEach( (todo) => {
+        const deleteIcon = document.createElement('i');
+        deleteIcon.classList.add('far', 'fa-trash-alt', 'delete');
+    
+        const todoItem = document.createElement('li');
+        todoItem.classList.add('todo');
+        todoItem.textContent = todo;
         
-        // Delete todo item
-        const deleteTodo = document.querySelectorAll('.delete');
+        todoItem.appendChild(deleteIcon);
+        todosList.appendChild(todoItem)
+    });
+}
 
-        deleteTodo.forEach((item) => {
-       
-            item.addEventListener('click', e => {
-                item.parentElement.remove();
-                localStorage.removeItem(e.target.previousElementSibling.textContent); 
-            });
-        });
-        
+// Remove todo from local storage
+const deleteLocalTodo = (todo) => {
+    let todos;
+
+    if(localStorage.getItem('todos') === null) {
+        todos = [];
+    } else {
+        todos = JSON.parse(localStorage.getItem('todos'));
+    }
+
+    const todoIndex = todo.textContent;
+    todos.splice(todos.indexOf(todoIndex), 1);
+    localStorage.setItem('todos', JSON.stringify(todos));
+
+}
+
+// Event lister on submit to append the todos to the parent element
+submitForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    
+    const todo = todoInput.value.trim();
+    console.log(todo);
+    if(todo.length > 1) {
+       createTodo(todo);
+       submitForm.reset();
     }
     
-
 });
 
-
-// Event listener on submit add todo form
-addTodoForm.addEventListener('submit', e => {
-    e.preventDefault();
-
-    const todo = addTodoForm.add.value.trim();
-
-    if(todo.length > 2) {
-        addTodo(todo);
-        addTodoForm.reset();
+// Event lister when add icon is clicked
+submitForm.addEventListener('click', (e) => {
+    
+    if(e.target.classList.contains('add-todo')) {
+        const todo = todoInput.value.trim();
+        
+        if(todo.length > 1) {
+            createTodo(todo);
+            submitForm.reset();
+            todoInput.focus();
+        }
     }
 
 });
 
+// Event lister (on the ul container) when clicked on delete icon to remove from the UI and from local storage
+todosList.addEventListener('click', (e) => {
 
+    if(e.target.classList.contains('delete')) {
+       e.target.parentElement.remove();
+       deleteLocalTodo(e.target.parentElement);
+    }
+
+});
+
+// Event lister on page reload to render the todo list saved on local storage
+document.addEventListener('DOMContentLoaded', getLocalTodos());
